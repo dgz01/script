@@ -27,9 +27,9 @@ elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
     release="centos"
 else
     echo -e "${red}未检测到系统版本，请联系脚本作者！${plain}\n" && exit 1
-echo "os: ${release}"
 fi
 
+echo "${green}os: ${release}"
 arch=$(arch)
 
 if [[ $arch == "x86_64" || $arch == "x64" || $arch == "amd64" ]]; then
@@ -41,7 +41,7 @@ else
     echo -e "${red}检测架构失败，使用默认架构: ${arch}${plain}"
 fi
 
-echo "架构: ${arch}"
+echo "${green}架构: ${arch}"
 
 if [ $(getconf WORD_BIT) != '32' ] && [ $(getconf LONG_BIT) != '64' ]; then
     echo "本软件不支持 32 位系统(x86)，请使用 64 位系统(x86_64)，如果检测有误，请联系作者"
@@ -72,7 +72,7 @@ elif [[ x"${release}" == x"debian" ]]; then
     fi
 fi
 
-echo "os_version=: ${release}"
+echo "${green}os_version=: ${os_version}"
 
 install_base() {
     if [[ x"${release}" == x"centos" ]]; then
