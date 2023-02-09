@@ -350,7 +350,7 @@ print_end_time() {
 
 ! _exists "wget" && _red "Error: wget command not found.\n" && exit 1
 ! _exists "free" && _red "Error: free command not found.\n" && exit 1
-# start_time=$(date +%s)
+start_time=$(date +%s)
 get_system_info
 # check_virt
 # clear
