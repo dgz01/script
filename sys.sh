@@ -90,4 +90,5 @@ print_system_info() {
     echo " TCP CC             : $(_yellow "$tcpctrl")"
     echo " Virtualization     : $(_blue "$virt")"
 }
+get_system_info
 print_system_info
