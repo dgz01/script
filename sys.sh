@@ -354,7 +354,7 @@ start_time=$(date +%s)
 get_system_info
 check_virt
 clear
-# print_intro
+print_intro
 next
 print_system_info
 # ipv4_info
