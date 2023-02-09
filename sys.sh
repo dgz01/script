@@ -1,12 +1,5 @@
 #!/usr/bin/env bash
-#
-# Description: A Bench Script by Teddysun
-#
-# Copyright (C) 2015 - 2022 Teddysun <i@teddysun.com>
-# Thanks: LookBack <admin@dwhd.org>
-# URL: https://teddysun.com/444.html
-# https://github.com/teddysun/across/blob/master/bench.sh
-#
+
 trap _exit INT QUIT TERM
 
 _red() {
@@ -53,36 +46,6 @@ get_opsy() {
 
 next() {
     printf "%-70s\n" "-" | sed 's/\s/-/g'
-}
-
-speed_test() {
-    local nodeName="$2"
-    [ -z "$1" ] && ./speedtest-cli/speedtest --progress=no --accept-license --accept-gdpr > ./speedtest-cli/speedtest.log 2>&1 || \
-    ./speedtest-cli/speedtest --progress=no --server-id=$1 --accept-license --accept-gdpr > ./speedtest-cli/speedtest.log 2>&1
-    if [ $? -eq 0 ]; then
-        local dl_speed=$(awk '/Download/{print $3" "$4}' ./speedtest-cli/speedtest.log)
-        local up_speed=$(awk '/Upload/{print $3" "$4}' ./speedtest-cli/speedtest.log)
-        local latency=$(awk '/Latency/{print $2" "$3}' ./speedtest-cli/speedtest.log)
-        if [[ -n "${dl_speed}" && -n "${up_speed}" && -n "${latency}" ]]; then
-            printf "\033[0;33m%-18s\033[0;32m%-18s\033[0;31m%-20s\033[0;36m%-12s\033[0m\n" " ${nodeName}" "${up_speed}" "${dl_speed}" "${latency}"
-        fi
-    fi
-}
-
-speed() {
-    speed_test '' 'Speedtest.net'
-    speed_test '21541' 'Los Angeles, US'
-    speed_test '43860' 'Dallas, US'
-    speed_test '40879' 'Montreal, CA'
-    speed_test '24215' 'Paris, FR'
-    speed_test '28922' 'Amsterdam, NL'
-    speed_test '24447' 'Shanghai, CN'
-    speed_test '26352' 'Nanjing, CN'
-    speed_test '27594' 'Guangzhou, CN'
-    speed_test '32155' 'Hongkong, CN'
-    speed_test '6527'  'Seoul, KR'
-    speed_test '7311'  'Singapore, SG'
-    speed_test '21569' 'Tokyo, JP'
 }
 
 io_test() {
@@ -188,48 +151,6 @@ ipv4_info() {
     if [[ -z "$org" ]]; then
         echo " Region             : $(_red "No ISP detected")"
     fi
-}
-
-install_speedtest() {
-    if [ ! -e "./speedtest-cli/speedtest" ]; then
-        sys_bit=""
-        local sysarch="$(uname -m)"
-        if [ "${sysarch}" = "unknown" ] || [ "${sysarch}" = "" ]; then
-            local sysarch="$(arch)"
-        fi
-        if [ "${sysarch}" = "x86_64" ]; then
-            sys_bit="x86_64"
-        fi
-        if [ "${sysarch}" = "i386" ] || [ "${sysarch}" = "i686" ]; then
-            sys_bit="i386"
-        fi
-        if [ "${sysarch}" = "armv8" ] || [ "${sysarch}" = "armv8l" ] || [ "${sysarch}" = "aarch64" ] || [ "${sysarch}" = "arm64" ]; then
-            sys_bit="aarch64"
-        fi
-        if [ "${sysarch}" = "armv7" ] || [ "${sysarch}" = "armv7l" ]; then
-            sys_bit="armhf"
-        fi
-        if [ "${sysarch}" = "armv6" ]; then
-            sys_bit="armel"
-        fi
-        [ -z "${sys_bit}" ] && _red "Error: Unsupported system architecture (${sysarch}).\n" && exit 1
-        url1="https://install.speedtest.net/app/cli/ookla-speedtest-1.1.1-linux-${sys_bit}.tgz"
-        url2="https://dl.lamp.sh/files/ookla-speedtest-1.1.1-linux-${sys_bit}.tgz"
-        wget --no-check-certificate -q -T10 -O speedtest.tgz ${url1}
-        if [ $? -ne 0 ]; then
-            wget --no-check-certificate -q -T10 -O speedtest.tgz ${url2}
-            [ $? -ne 0 ] && _red "Error: Failed to download speedtest-cli.\n" && exit 1
-        fi
-        mkdir -p speedtest-cli && tar zxf speedtest.tgz -C ./speedtest-cli && chmod +x ./speedtest-cli/speedtest
-        rm -f speedtest.tgz
-    fi
-    printf "%-18s%-18s%-20s%-12s\n" " Node Name" "Upload Speed" "Download Speed" "Latency"
-}
-
-print_intro() {
-    echo "-------------------- A Bench.sh Script By Teddysun -------------------"
-    echo " Version            : $(_green v2022-06-01)"
-    echo " Usage              : $(_red "wget -qO- bench.sh | bash")"
 }
 
 # Get System information
@@ -354,14 +275,11 @@ start_time=$(date +%s)
 get_system_info
 check_virt
 clear
-# print_intro
 next
 print_system_info
-# ipv4_info
-# next
-# print_io_test
-# next
-# install_speedtest && speed && rm -fr speedtest-cli
-# next
-# print_end_time
-# next
+ipv4_info
+next
+print_io_test
+next
+print_end_time
+next
